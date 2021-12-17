@@ -26,10 +26,11 @@ readFiles <- function(dir, type = NULL) {
     files_table <- files_table[order(time_series[, 1], time_series[, 2], time_series[, 3])]
     y <- NULL
     for (i in files_table) {
+      print(paste("reading file", i))
       time <- strsplit(i, " ") %>% unlist()
       start <- time[1]
       end <- time[3] %>% strsplit(., "_") %>% unlist() %>% .[1]
-      order <- as.numeric(time[3] %>% strsplit(., "-|\\.") %>% unlist() %>% .[4] %>% gsub("_", "", .))/100 -1
+      order <- as.numeric(time[3] %>% strsplit(., "-|\\.") %>% unlist() %>% .[4] %>% gsub("_", "", .))
       x <- read.dbf(file.path(dir, i))[, c(1, 5, 9)]
       colnames(x) <- c("Id", "AvgSpeed", "Hits")
       x <- data.frame(x, "start" = start, "end" = end, "order" = order)
@@ -37,6 +38,7 @@ readFiles <- function(dir, type = NULL) {
     }
   }
   if (type == "network") {
+    print(paste("reading file", files_shape))
     y <- read.dbf(file.path(dir, files_shape))
   }
   return(y)
